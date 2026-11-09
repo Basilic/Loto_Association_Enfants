@@ -1,0 +1,90 @@
+name: Build Multi Platform
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        include:
+
+          - os: windows-latest
+            artifact_name: Windows
+
+          - os: ubuntu-latest
+            artifact_name: Linux
+
+          - os: macos-latest
+            artifact_name: MacOS
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build executable
+        shell: bash
+        run: |
+          pyinstaller --clean Tirage_Loto_V2.spec
+
+      - name: Linux package
+        if: runner.os == 'Linux'
+        run: |
+          cd dist
+          zip -r Tirage_Loto_Linux.zip *
+
+      - name: Windows package
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Compress-Archive -Path dist\* -DestinationPath Tirage_Loto_Windows.zip
+
+      - name: MacOS package
+        if: runner.os == 'macOS'
+        run: |
+          cd dist
+          zip -r Tirage_Loto_MacOS.zip *
+
+      - name: Upload Linux
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tirage_Loto_Linux
+          path: dist/Tirage_Loto_Linux.zip
+
+      - name: Upload Windows
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tirage_Loto_Windows
+          path: Tirage_Loto_Windows.zip
+
+      - name: Upload MacOS
+        if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tirage_Loto_MacOS
+          path: dist/Tirage_Loto_MacOS.zip

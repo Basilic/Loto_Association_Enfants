@@ -1,8 +1,22 @@
+import os
+import sys
+
 import tkinter as tk
 from tkinter import Label, Button
 import random
 from PIL import Image, ImageTk
 import pygame
+
+def resource_path(relative_path):
+    """
+    Compatible PyInstaller.
+    """
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 class ImageApp:
     def __init__(self, range_start=0, range_end=20, history_size=7):   
@@ -80,7 +94,8 @@ class ImageApp:
 
     def play_sound(self):
         try:
-            pygame.mixer.music.load("tirage.mp3")
+            #pygame.mixer.music.load("tirage.mp3")
+            pygame.mixer.music.load(resource_path("tirage.mp3"))
             pygame.mixer.music.play()
         except Exception as e:
             print(f"Erreur son : {e}")
@@ -149,13 +164,15 @@ class ImageApp:
     def display_Init(self):
         try:
             new_number = 0
-            image_path = f"images/{new_number}.jpg"
+            #image_path = f"images/{new_number}.jpg"
+            image_path = resource_path(f"images/{new_number}.jpg")
             try:
                 image = Image.open(image_path)
             except FileNotFoundError:
                 # Si le fichier n'existe pas, chargez l'image 0.jpg
-                image = Image.open("images/0.jpg")
-
+                #image = Image.open("images/0.jpg")
+                image = Image.open(resource_path("images/0.jpg"))
+                
             image_main = image.resize((400, 400), Image.LANCZOS)
             photo_main = ImageTk.PhotoImage(image_main)
             self.main_image_label.config(image=photo_main)
@@ -174,7 +191,9 @@ class ImageApp:
                     thumb = Image.open(thumb_path)
                 except FileNotFoundError:
                     # Si le fichier n'existe pas, chargez l'image 0.jpg
-                    thumb = Image.open("images/0.jpg")
+                    #thumb = Image.open("images/0.jpg")
+                    thumb = Image.open(resource_path("images/0.jpg"))
+                    
                 thumb = thumb.resize((75, 75), Image.LANCZOS)
                 thumb_photo = ImageTk.PhotoImage(thumb)
                 label = Label(self.history_frame, image=thumb_photo)
@@ -195,11 +214,13 @@ class ImageApp:
             self.generated_numbers.add(new_number)
 
             # ===== Image principale =====
-            image_path = f"images/{new_number}.jpg"
+            #image_path = f"images/{new_number}.jpg"
+            image_path = resource_path(f"images/{new_number}.jpg")
             try:
                 image = Image.open(image_path)
             except FileNotFoundError:
-                image = Image.open("images/0.jpg")
+                #image = Image.open("images/0.jpg")
+                image = Image.open(resource_path("images/0.jpg"))
 
             image_main = image.resize((600, 600), Image.LANCZOS)
             photo_main = ImageTk.PhotoImage(image_main)
@@ -232,9 +253,10 @@ class ImageApp:
                 try:
                     thumb = Image.open(thumb_path)
                 except FileNotFoundError:
-                    thumb = Image.open("images/0.jpg")
-
-                thumb = thumb.resize((75, 75), Image.LANCZOS)
+                    #thumb = Image.open("images/0.jpg")
+                    thumb = Image.open(resource_path("images/0.jpg"))
+                    
+                    thumb = thumb.resize((75, 75), Image.LANCZOS)
                 thumb_photo = ImageTk.PhotoImage(thumb)
 
                 img_label = Label(self.history_frame, image=thumb_photo)
@@ -261,8 +283,9 @@ class ImageApp:
                 try:
                     thumb = Image.open(thumb_path)
                 except FileNotFoundError:
-                    thumb = Image.open("images/0.jpg")
-
+                    #thumb = Image.open("images/0.jpg")
+                    thumb = Image.open(resource_path("images/0.jpg"))
+                    
                 thumb = thumb.resize((75, 75), Image.LANCZOS)
                 thumb_photo = ImageTk.PhotoImage(thumb)
 
