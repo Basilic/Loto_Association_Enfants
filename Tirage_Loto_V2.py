@@ -1,5 +1,4 @@
-import os
-import sys
+
 
 import tkinter as tk
 from tkinter import Label, Button
@@ -7,16 +6,36 @@ import random
 from PIL import Image, ImageTk
 import pygame
 
-def resource_path(relative_path):
-    """
-    Compatible PyInstaller.
-    """
-    try:
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
+import os
+import sys
 
-    return os.path.join(base_path, relative_path)
+def get_app_path():
+    """
+    Retourne le dossier du script en mode Python
+    ou le dossier de l'exécutable en mode PyInstaller.
+    """
+    if getattr(sys, "frozen", False):
+        return os.path.dirname(sys.executable)
+
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+APP_PATH = get_app_path()
+
+
+def image_file(number):
+    return os.path.join(
+        APP_PATH,
+        "images",
+        f"{number}.jpg"
+    )
+
+
+def sound_file():
+    return os.path.join(
+        APP_PATH,
+        "tirage.mp3"
+    )
 
 class ImageApp:
     def __init__(self, range_start=0, range_end=20, history_size=7):   
@@ -94,11 +113,11 @@ class ImageApp:
 
     def play_sound(self):
         try:
-            #pygame.mixer.music.load("tirage.mp3")
-            pygame.mixer.music.load(resource_path("tirage.mp3"))
+            pygame.mixer.music.load(sound_file())
             pygame.mixer.music.play()
         except Exception as e:
             print(f"Erreur son : {e}")
+
 
     def toggle_timer(self):
         if not self.running:
@@ -165,13 +184,13 @@ class ImageApp:
         try:
             new_number = 0
             #image_path = f"images/{new_number}.jpg"
-            image_path = resource_path(f"images/{new_number}.jpg")
+            image_path = image_file(new_number)
             try:
                 image = Image.open(image_path)
             except FileNotFoundError:
                 # Si le fichier n'existe pas, chargez l'image 0.jpg
                 #image = Image.open("images/0.jpg")
-                image = Image.open(resource_path("images/0.jpg"))
+                image = Image.open(image_file(0))
                 
             image_main = image.resize((400, 400), Image.LANCZOS)
             photo_main = ImageTk.PhotoImage(image_main)
@@ -186,13 +205,13 @@ class ImageApp:
             label2.grid(row=0, column=3, padx=5, pady=5)
 
             for i, num in enumerate(reversed(self.history[:-1])):
-                thumb_path = f"images/{num}.jpg"
+                thumb_path = image_file(num)
                 try:
                     thumb = Image.open(thumb_path)
                 except FileNotFoundError:
                     # Si le fichier n'existe pas, chargez l'image 0.jpg
                     #thumb = Image.open("images/0.jpg")
-                    thumb = Image.open(resource_path("images/0.jpg"))
+                    thumb = Image.open(image_file(0))
                     
                 thumb = thumb.resize((75, 75), Image.LANCZOS)
                 thumb_photo = ImageTk.PhotoImage(thumb)
@@ -215,12 +234,12 @@ class ImageApp:
 
             # ===== Image principale =====
             #image_path = f"images/{new_number}.jpg"
-            image_path = resource_path(f"images/{new_number}.jpg")
+            image_path = image_file(new_number)
             try:
                 image = Image.open(image_path)
             except FileNotFoundError:
                 #image = Image.open("images/0.jpg")
-                image = Image.open(resource_path("images/0.jpg"))
+                image = Image.open(image_file(0))
 
             image_main = image.resize((600, 600), Image.LANCZOS)
             photo_main = ImageTk.PhotoImage(image_main)
@@ -249,12 +268,12 @@ class ImageApp:
                 widget.destroy()
 
             for i, num in enumerate(reversed(self.history)):
-                thumb_path = f"images/{num}.jpg"
+                thumb_path = image_file(num)
                 try:
                     thumb = Image.open(thumb_path)
                 except FileNotFoundError:
                     #thumb = Image.open("images/0.jpg")
-                    thumb = Image.open(resource_path("images/0.jpg"))
+                    thumb = Image.open(image_file(0))
                     
                     thumb = thumb.resize((75, 75), Image.LANCZOS)
                 thumb_photo = ImageTk.PhotoImage(thumb)
@@ -279,12 +298,12 @@ class ImageApp:
             MAX_COL = 15
 
             for num in sorted(self.generated_numbers):
-                thumb_path = f"images/{num}.jpg"
+                thumb_path = image_file(num)
                 try:
                     thumb = Image.open(thumb_path)
                 except FileNotFoundError:
                     #thumb = Image.open("images/0.jpg")
-                    thumb = Image.open(resource_path("images/0.jpg"))
+                    thumb = Image.open(image_file(0))
                     
                 thumb = thumb.resize((75, 75), Image.LANCZOS)
                 thumb_photo = ImageTk.PhotoImage(thumb)
