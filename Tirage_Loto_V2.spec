@@ -9,8 +9,6 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
-        ('images', 'images'),
-        ('tirage.mp3', '.'),
     ],
     hiddenimports=hiddenimports,
     hookspath=[],
