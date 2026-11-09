@@ -1,10 +1,9 @@
-
-
 import tkinter as tk
 from tkinter import Label, Button
 import random
 from PIL import Image, ImageTk
 import pygame
+
 
 import os
 import sys
@@ -111,6 +110,13 @@ class ImageApp:
         self.display_Init()
         #self.display_new_image()
 
+ #   def play_sound(self):
+ #       try:
+ #           pygame.mixer.music.load("tirage.mp3")
+ #           pygame.mixer.music.play()
+ #       except Exception as e:
+ #           print(f"Erreur son : {e}")
+
     def play_sound(self):
         try:
             pygame.mixer.music.load(sound_file())
@@ -191,7 +197,7 @@ class ImageApp:
                 # Si le fichier n'existe pas, chargez l'image 0.jpg
                 #image = Image.open("images/0.jpg")
                 image = Image.open(image_file(0))
-                
+
             image_main = image.resize((400, 400), Image.LANCZOS)
             photo_main = ImageTk.PhotoImage(image_main)
             self.main_image_label.config(image=photo_main)
@@ -205,6 +211,7 @@ class ImageApp:
             label2.grid(row=0, column=3, padx=5, pady=5)
 
             for i, num in enumerate(reversed(self.history[:-1])):
+                #thumb_path = f"images/{num}.jpg"
                 thumb_path = image_file(num)
                 try:
                     thumb = Image.open(thumb_path)
@@ -212,7 +219,6 @@ class ImageApp:
                     # Si le fichier n'existe pas, chargez l'image 0.jpg
                     #thumb = Image.open("images/0.jpg")
                     thumb = Image.open(image_file(0))
-                    
                 thumb = thumb.resize((75, 75), Image.LANCZOS)
                 thumb_photo = ImageTk.PhotoImage(thumb)
                 label = Label(self.history_frame, image=thumb_photo)
@@ -268,14 +274,14 @@ class ImageApp:
                 widget.destroy()
 
             for i, num in enumerate(reversed(self.history)):
+                #thumb_path = f"images/{num}.jpg"
                 thumb_path = image_file(num)
                 try:
                     thumb = Image.open(thumb_path)
                 except FileNotFoundError:
-                    #thumb = Image.open("images/0.jpg")
-                    thumb = Image.open(image_file(0))
-                    
-                    thumb = thumb.resize((75, 75), Image.LANCZOS)
+                    thumb = Image.open("images/0.jpg")
+
+                thumb = thumb.resize((75, 75), Image.LANCZOS)
                 thumb_photo = ImageTk.PhotoImage(thumb)
 
                 img_label = Label(self.history_frame, image=thumb_photo)
@@ -298,6 +304,7 @@ class ImageApp:
             MAX_COL = 15
 
             for num in sorted(self.generated_numbers):
+                #thumb_path = f"images/{num}.jpg"
                 thumb_path = image_file(num)
                 try:
                     thumb = Image.open(thumb_path)
@@ -305,6 +312,7 @@ class ImageApp:
                     #thumb = Image.open("images/0.jpg")
                     thumb = Image.open(image_file(0))
                     
+
                 thumb = thumb.resize((75, 75), Image.LANCZOS)
                 thumb_photo = ImageTk.PhotoImage(thumb)
 
